@@ -1,0 +1,28 @@
+const allowedUrls = [
+  'https://starkfighter.xyz/assets/textures/asteroids/alpha.png',
+  'https://starkfighter.xyz/assets/textures/asteroids/bravo.png',
+  'https://starkfighter.xyz/assets/textures/asteroids/debrit1.png',
+  'https://starkfighter.xyz/assets/textures/asteroids/debrit2.png',
+  'https://starkfighter.xyz/assets/textures/asteroids/debrit3.png',
+  'https://starkfighter.xyz/assets/textures/asteroids/debrit4.png',
+  'https://starkfighter.xyz/assets/textures/asteroids/debrit5.png',
+  'https://starkfighter.xyz/assets/textures/asteroids/debrit6.png',
+];
+
+// Сохраняем ссылку на исходную функцию fetch
+const originalFetch = window.fetch;
+
+// Переопределяем функцию fetch
+window.fetch = function(url, options) {
+  // Проверяем, содержит ли список разрешенных ссылок URL запроса
+  const isAllowed = allowedUrls.some((allowedUrl) => url.includes(allowedUrl));
+  
+  // Если URL запроса не в списке разрешенных ссылок, то блокируем запрос
+  if (!isAllowed) {
+    console.log(`Запрос на ${url} заблокирован`);
+    return new Promise(() => {}); // Возвращаем промис, который никогда не завершается
+  }
+  
+  // Если URL запроса в списке разрешенных ссылок, то выполняем запрос с помощью исходной функции fetch
+  return originalFetch.call(this, url, options);
+};
